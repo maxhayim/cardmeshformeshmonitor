@@ -83,10 +83,13 @@ def main():
     # dev.cardputer.cc's store validator requires a desktop-entry file at
     # this exact path (confirmed via its "Preliminary check report" --
     # not documented anywhere in the README, discovered by trial upload).
+    # Display name is the README's Full Name ("CardMesh for MeshMonitor");
+    # Package/Exec stay as the short, space-free identifier ("cardmesh") per
+    # the README's Debian metadata spec (Package/Executable: cardmesh).
     desktop_entry = """[Desktop Entry]
 Version=1.0
 Type=Application
-Name=CardMesh
+Name=CardMesh for MeshMonitor
 Comment=Your pocket console for the mesh.
 Exec=cardmesh
 Icon=cardmesh

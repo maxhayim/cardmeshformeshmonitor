@@ -1,7 +1,7 @@
 {
   "package": "cardmesh",
   "executable": "cardmesh",
-  "displayName": "CardMesh",
+  "displayName": "CardMesh for MeshMonitor",
   "tagline": "Your pocket console for the mesh.",
   "description": "CardMesh is a keyboard-first pocket client for MeshMonitor, built for the M5Stack CardputerZero.",
   "version": "0.1.0",
