@@ -42,6 +42,17 @@ implemented:
   directly from the API response, not from local read-state tracking.
 - "Active" node count is a CardMesh-invented heuristic (`lastHeard` within
   the last 15 minutes) — MeshMonitor's API doesn't define an "active" field.
+- **Emoji in the source name render as small inline images**, not tofu
+  boxes — LVGL's bundled Montserrat font has no emoji glyphs at all, so
+  `src/ui/EmojiFont.{h,cpp}` substitutes small embedded Twemoji-derived
+  images for every single-codepoint emoji and every two-codepoint
+  regional-indicator flag pair (1651 codepoints total; see
+  `tools/gen_emoji_asset.py`). **Not covered**: multi-codepoint ZWJ
+  sequences — family groups, skin-tone modifiers, profession+gender
+  combos — since LVGL's imgfont callback only gets a 1-codepoint
+  lookahead, not full text shaping like a browser has. Those still render
+  as whatever the fallback font does with each individual codepoint
+  (typically nothing, since Montserrat doesn't have them either).
 
 ## Toolchain: why zig instead of a native cross-compiler
 
