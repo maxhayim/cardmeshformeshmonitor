@@ -130,9 +130,45 @@ the only declared `Depends:` — everything else ships in the package.
   clean directory using only the committed scripts, to confirm it's
   reproducible and not dependent on hand-fixups made during development.
 
+## Confirmed against the real dev.cardputer.cc portal
+
+`cardmesh_0.1.0_arm64.deb` was actually uploaded to
+`https://dev.cardputer.cc/` (2026-08-13). This confirmed several things
+this document previously listed as unverified assumptions:
+
+- **The upload itself succeeded** and the portal's "Preliminary check
+  report" parsed the package correctly, reporting "包含 30 个 ELF 二进制
+  （架构均为 arm64）" — "contains 30 ELF binaries (all arm64
+  architecture)" — matching this build's binary + 29 bundled libraries
+  exactly. This independently confirms the arm64/ELF validity claimed in
+  "What was verified, and how" above, from a source other than this build
+  pipeline's own checks.
+- **A desktop-entry file is required** at
+  `usr/share/APPLaunch/applications/*.desktop` — the portal rejected v0.1.0
+  with "缺少 usr/share/APPLaunch/applications/*.desktop（商店应用必须提供）"
+  ("missing ...; required for store apps"). This is not documented anywhere
+  in the README and was only discovered by this trial upload.
+  `scripts/package_deb.py` now generates a standard freedesktop-style
+  `.desktop` entry (`Name`, `Exec=cardmesh`, `Icon=cardmesh`, `Categories`)
+  at that path, and bundles `assets/branding/appIcon.png` at
+  `usr/share/pixmaps/cardmesh.png` to match `Icon=cardmesh`.
+- **The store submission form's real fields** are now known: app name,
+  one-line summary (≤80 chars), full description, up to 6 comma-separated
+  categories, an optional square-PNG icon (falls back to the icon inside
+  the `.deb` if left empty), and up to 6 screenshots at 320×170. A
+  `store` section in `app-builder.json` can reportedly auto-fill these from
+  a **public** source repository — not applicable here since this repo is
+  private, per the README's "Notes for AI Coding Assistants."
+
+Still unconfirmed: whether the package actually *launches and renders*
+correctly once installed — the portal's check is a packaging/metadata
+validator, not a functional test on real hardware or the emulator.
+
 ## What was NOT verified (the actual risk list)
 
-- **Not run on a physical CardputerZero.**
+- **Not run on a physical CardputerZero**, and not confirmed to launch
+  successfully even after passing the store portal's packaging checks
+  (see above — that check validates structure, not runtime behavior).
 - **Not run in the online emulator** (`https://cardputer.cc/emulator/`) —
   unknown whether that emulator even executes a plain Linux
   fbdev/evdev ELF binary, or expects integration through the AppBuilder's
@@ -151,11 +187,7 @@ the only declared `Depends:` — everything else ships in the package.
   device itself (`libc6` is not bundled — bundling libc is far riskier than
   depending on the system's own). If CardputerZero's OS ships an older
   glibc, the process will fail to start with a `GLIBC_2.36 not found`-style
-  error.
-- **`app-builder.json` schema**: fields (`package`, `executable`,
-  `displayName`, `architecture`, etc.) are inferred from what the README
-  states the Developer Center expects, not validated against the real
-  manifest schema.
+  error. The store portal's packaging check does not validate this.
 
 ## If it doesn't run
 
