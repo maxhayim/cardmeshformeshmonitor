@@ -662,7 +662,7 @@ Example:
 ┌──────────────────────────────┐
 │ CARDMESH                 ●   │
 ├──────────────────────────────┤
-│ SOURCE: Doral                │
+│ SOURCE: Miami                │
 │                              │
 │ Nodes                  127   │
 │ Active                  83   │
@@ -696,7 +696,7 @@ Example:
 ```text
 SOURCES
 
-> Doral Base          ●
+> Miami Base          ●
   EOC                 ●
   Brickell            ●
   Lake Placid         ○
