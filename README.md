@@ -1,4 +1,18 @@
-# CardMesh for MeshMonitor
+<p align="center">
+  <img src="assets/branding/logo.png" alt="CardMesh for MeshMonitor" width="220">
+</p>
+
+<h1 align="center">CardMesh for MeshMonitor</h1>
+
+<p align="center">
+  <strong>Your pocket console for the mesh.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/maxhayim/cardmeshformeshmonitor">
+    <img src="https://img.shields.io/badge/GitHub-maxhayim%2Fcardmeshformeshmonitor-181717?logo=github&logoColor=white" alt="GitHub Repository">
+  </a>
+</p>
 
 **CardMesh** is a keyboard-first pocket client for **MeshMonitor**, designed specifically for the **M5Stack CardputerZero**.
 
@@ -456,6 +470,9 @@ cardmeshformeshmonitor/
 │       └── SettingsScreen.cpp
 │
 ├── assets/
+│   └── branding/
+│       ├── logo.png
+│       └── appicon.png
 ├── docs/
 ├── screenshots/
 ├── tests/
