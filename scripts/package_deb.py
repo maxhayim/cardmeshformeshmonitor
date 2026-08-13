@@ -40,12 +40,15 @@ def main():
     bin_out = os.path.join(stage, "usr", "bin")
     debian_out = os.path.join(stage, "DEBIAN")
     desktop_out = os.path.join(stage, "usr", "share", "APPLaunch", "applications")
-    pixmaps_out = os.path.join(stage, "usr", "share", "pixmaps")
+    # Store policy forbids files loose directly under usr/share/ (e.g. the
+    # traditional usr/share/pixmaps/cardmesh.png) -- everything under
+    # usr/share/ must live inside a package-name subdirectory instead.
+    icon_out = os.path.join(stage, "usr", "share", "cardmesh")
     os.makedirs(lib_out, exist_ok=True)
     os.makedirs(bin_out, exist_ok=True)
     os.makedirs(debian_out, exist_ok=True)
     os.makedirs(desktop_out, exist_ok=True)
-    os.makedirs(pixmaps_out, exist_ok=True)
+    os.makedirs(icon_out, exist_ok=True)
 
     # zig objcopy --strip-debug/--strip-all are unimplemented for ELF as of
     # zig 0.16.0, so the shipped binary keeps its debug info (larger, but
@@ -92,7 +95,7 @@ Type=Application
 Name=CardMesh for MeshMonitor
 Comment=Your pocket console for the mesh.
 Exec=cardmesh
-Icon=cardmesh
+Icon=/usr/share/cardmesh/cardmesh.png
 Terminal=false
 Categories=Utility;Network;
 """
@@ -101,7 +104,7 @@ Categories=Utility;Network;
 
     icon_src = os.path.join(REPO_ROOT, "assets", "branding", "appIcon.png")
     if os.path.exists(icon_src):
-        shutil.copy2(icon_src, os.path.join(pixmaps_out, "cardmesh.png"))
+        shutil.copy2(icon_src, os.path.join(icon_out, "cardmesh.png"))
 
     installed_size_kb = 0
     for dirpath, _dirnames, filenames in os.walk(stage):
