@@ -39,9 +39,13 @@ def main():
     lib_out = os.path.join(stage, "usr", "lib", "cardmesh")
     bin_out = os.path.join(stage, "usr", "bin")
     debian_out = os.path.join(stage, "DEBIAN")
+    desktop_out = os.path.join(stage, "usr", "share", "APPLaunch", "applications")
+    pixmaps_out = os.path.join(stage, "usr", "share", "pixmaps")
     os.makedirs(lib_out, exist_ok=True)
     os.makedirs(bin_out, exist_ok=True)
     os.makedirs(debian_out, exist_ok=True)
+    os.makedirs(desktop_out, exist_ok=True)
+    os.makedirs(pixmaps_out, exist_ok=True)
 
     # zig objcopy --strip-debug/--strip-all are unimplemented for ELF as of
     # zig 0.16.0, so the shipped binary keeps its debug info (larger, but
@@ -75,6 +79,26 @@ def main():
             '/usr/lib/cardmesh/cardmesh.bin "$@"\n'
         )
     os.chmod(wrapper_path, 0o755)
+
+    # dev.cardputer.cc's store validator requires a desktop-entry file at
+    # this exact path (confirmed via its "Preliminary check report" --
+    # not documented anywhere in the README, discovered by trial upload).
+    desktop_entry = """[Desktop Entry]
+Version=1.0
+Type=Application
+Name=CardMesh
+Comment=Your pocket console for the mesh.
+Exec=cardmesh
+Icon=cardmesh
+Terminal=false
+Categories=Utility;Network;
+"""
+    with open(os.path.join(desktop_out, "cardmesh.desktop"), "w") as f:
+        f.write(desktop_entry)
+
+    icon_src = os.path.join(REPO_ROOT, "assets", "branding", "appIcon.png")
+    if os.path.exists(icon_src):
+        shutil.copy2(icon_src, os.path.join(pixmaps_out, "cardmesh.png"))
 
     installed_size_kb = 0
     for dirpath, _dirnames, filenames in os.walk(stage):
