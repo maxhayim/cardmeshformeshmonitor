@@ -744,10 +744,10 @@ FloridaMesh
 K4ABC 22:41
 Testing Kendall node.
 
-MTEDC 22:43
-Copy from Doral.
+MRNODE 22:43
+Copy from Tampa.
 
-WRUV246 22:44
+WXOP567 22:44
 Testing CardMesh.
 
 ──────────────────────────────
