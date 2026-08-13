@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/branding/logo.png" alt="CardMesh for MeshMonitor" width="220">
+  <img src="assets/branding/logo.png" alt="CardMesh for MeshMonitor" width="620">
 </p>
 
 <h1 align="center">CardMesh for MeshMonitor</h1>
