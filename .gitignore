@@ -1,0 +1,15 @@
+build/
+dist/
+*.deb
+*.log
+
+.env
+.env.*
+*.token
+
+config.json
+credentials.*
+
+cardmesh.db
+
+.DS_Store

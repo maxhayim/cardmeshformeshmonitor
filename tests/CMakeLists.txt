@@ -1,0 +1,15 @@
+add_executable(test_url_construction test_url_construction.cpp)
+target_link_libraries(test_url_construction PRIVATE cardmesh_core)
+add_test(NAME url_construction COMMAND test_url_construction)
+
+add_executable(test_model_parsing test_model_parsing.cpp)
+target_link_libraries(test_model_parsing PRIVATE cardmesh_core)
+add_test(NAME model_parsing COMMAND test_model_parsing)
+
+add_executable(test_settings test_settings.cpp)
+target_link_libraries(test_settings PRIVATE cardmesh_core)
+add_test(NAME settings COMMAND test_settings)
+
+add_executable(test_database test_database.cpp)
+target_link_libraries(test_database PRIVATE cardmesh_core)
+add_test(NAME database COMMAND test_database)
