@@ -1831,3 +1831,24 @@ cardmesh_<version>_arm64.deb
 ### Core Philosophy
 
 > **MeshMonitor does the heavy lifting. CardMesh puts the mesh in your hand.**
+
+## License
+
+This project is licensed under the MIT License.
+
+See the [LICENSE](LICENSE) file for details.  
+Full license text: https://opensource.org/licenses/MIT
+
+---
+
+## Contributing
+
+Pull requests are welcome. Open an issue first to discuss ideas or report bugs.</p>
+
+---
+
+## Acknowledgments
+
+* MeshMonitor built by [Yeraze](https://github.com/Yeraze) 
+
+Discover other Community Add-ons for MeshMonitor: https://meshmonitor.org/add-ons/
