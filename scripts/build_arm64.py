@@ -69,6 +69,7 @@ def main():
         "src/storage/Database.cpp",
         "src/ui/NetworkWorker.cpp",
         "src/ui/DashboardScreen.cpp",
+        "src/ui/EmojiFont.cpp",
         "src/ui/EvdevKeyboard.cpp",
         "src/ui_main.cpp",
     ]

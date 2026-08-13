@@ -43,6 +43,7 @@ def main():
     cpp_sources = [
         os.path.join(TOOL_DIR, "main.cpp"),
         os.path.join(REPO_ROOT, "src", "ui", "DashboardScreen.cpp"),
+        os.path.join(REPO_ROOT, "src", "ui", "EmojiFont.cpp"),
     ]
     lvgl_sources = sorted(
         glob.glob(os.path.join(REPO_ROOT, "third_party", "lvgl", "src", "**", "*.c"), recursive=True)

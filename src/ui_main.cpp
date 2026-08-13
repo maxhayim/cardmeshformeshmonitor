@@ -38,6 +38,7 @@ int main() {
     }
 
     lv_init();
+    lv_lodepng_init();  // needed by DashboardScreen's imgfont (emoji rendering)
 
     lv_display_t* display = lv_linux_fbdev_create();
     lv_linux_fbdev_set_file(display, envOr("CARDMESH_FB_DEVICE", "/dev/fb0").c_str());

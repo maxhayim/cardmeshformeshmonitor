@@ -2,6 +2,8 @@
 
 #include <cstdio>
 
+#include "EmojiFont.h"
+
 namespace cardmesh::ui {
 
 namespace {
@@ -15,6 +17,8 @@ void setValueText(lv_obj_t* label, int value) {
 }  // namespace
 
 DashboardScreen::DashboardScreen(DashboardModel& model) : model_(model) { build(); }
+
+DashboardScreen::~DashboardScreen() { destroyEmojiFont(sourceLabelFont_); }
 
 void DashboardScreen::build() {
     lv_obj_t* screen = lv_screen_active();
@@ -40,6 +44,11 @@ void DashboardScreen::build() {
     lv_label_set_text(sourceLabel_, "SOURCE: --");
     lv_obj_set_style_text_color(sourceLabel_, lv_color_white(), 0);
     lv_obj_align(sourceLabel_, LV_ALIGN_TOP_LEFT, 2, 26);
+
+    sourceLabelFont_ = createEmojiFont(16, LV_FONT_DEFAULT);
+    if (sourceLabelFont_ != nullptr) {
+        lv_obj_set_style_text_font(sourceLabel_, sourceLabelFont_, 0);
+    }
 
     struct Row {
         const char* label;

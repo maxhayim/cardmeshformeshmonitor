@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
     const std::string outPath = argv[2];
 
     lv_init();
+    lv_lodepng_init();  // needed by DashboardScreen's imgfont (emoji rendering)
 
     lv_display_t* disp = lv_display_create(kWidth, kHeight);
     static uint16_t buf[kWidth * kHeight];
@@ -74,7 +75,7 @@ int main(int argc, char** argv) {
         if (scenario == "connected") {
             model.connected = true;
             model.statusMessage = "CONNECTED";
-            model.sourceName = "Doral Base";
+            model.sourceName = "Yeraze StationG2 \xF0\x9F\x9A\x89";
             model.sourceCount = 5;
             model.nodeCount = 127;
             model.activeCount = 83;

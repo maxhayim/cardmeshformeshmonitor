@@ -13,6 +13,7 @@ namespace cardmesh::ui {
 class DashboardScreen {
 public:
     explicit DashboardScreen(DashboardModel& model);
+    ~DashboardScreen();
 
     // Call periodically from the LVGL timer/main loop; cheap no-op if the
     // model hasn't changed since the last call.
@@ -22,6 +23,11 @@ private:
     void build();
 
     DashboardModel& model_;
+
+    // Renders emoji inline on sourceLabel_ (see EmojiFont.h), falling back
+    // to the normal font for everything else -- LVGL's bundled Montserrat
+    // font has no emoji glyphs.
+    lv_font_t* sourceLabelFont_ = nullptr;
 
     lv_obj_t* statusDot_ = nullptr;
     lv_obj_t* statusLabel_ = nullptr;
