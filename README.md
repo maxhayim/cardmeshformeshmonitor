@@ -371,6 +371,18 @@ AppStore screenshots should be captured at the CardputerZero native resolution:
 320 × 170
 ```
 
+The two below are the current Dashboard screen, host-rendered at 320×170 from
+the real `DashboardScreen` code (`tools/screenshot/`) — not a mockup, but
+also not a capture from real CardputerZero hardware or the online emulator.
+See [`docs/DEVICE_BUILD.md`](docs/DEVICE_BUILD.md) for what that does and
+doesn't confirm.
+
+<p align="center">
+  <img src="screenshots/dashboard.png" alt="CardMesh Dashboard, connected" width="320">
+  &nbsp;&nbsp;
+  <img src="screenshots/dashboard-offline.png" alt="CardMesh Dashboard, server unreachable" width="320">
+</p>
+
 Recommended screenshots for the first release:
 
 1. Dashboard
