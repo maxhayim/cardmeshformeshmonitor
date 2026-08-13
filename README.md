@@ -24,13 +24,13 @@ It provides a compact physical interface for accessing MeshMonitor channels, dir
 
 ## Project Status
 
-**Current status:** Early development / planning  
-**Target initial release:** `v0.1.0`  
-**Repository:** `maxhayim/cardmeshformeshmonitor`
+**Current status:** Early development — v0.1.0 ships the Dashboard screen only  
+**Latest release:** [`v0.1.0`](https://github.com/maxhayim/cardmeshformeshmonitor/releases/tag/v0.1.0)  
+**Repository:** `maxhayim/cardmeshformeshmonitor` (public)
 
-This repository will remain **private during initial development and testing**.
+This repository is now public. The `v0.1.0` `.deb` build has **not** been verified against real CardputerZero hardware or the official online emulator — see [`docs/DEVICE_BUILD.md`](docs/DEVICE_BUILD.md) for exactly what is and isn't confirmed before relying on it.
 
-Public release, licensing, contribution guidelines, and distribution plans will be determined once the application reaches a usable and stable state.
+Licensing is [MIT](LICENSE). See [`CONTRIBUTING.md`](CONTRIBUTING.md) for how to contribute and [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) / [`SECURITY.md`](SECURITY.md) for the rest of the project's community policies.
 
 ---
 
@@ -340,9 +340,7 @@ cardmesh_0.1.0_arm64.deb
 
 The Developer Center uses GitHub authentication for package management and AppStore submission.
 
-Because the CardMesh GitHub repository will remain **private during initial development**, early releases should be uploaded directly as `.deb` packages rather than depending on public-repository metadata integration.
-
-Once the repository becomes public, AppStore metadata may also be sourced from the repository and `app-builder.json` where supported.
+The repository is public as of `v0.1.0`, so the Developer Center's submission flow can clone it directly (its store-validation step does this to pull `app-builder.json`'s store metadata) rather than relying solely on manually-uploaded `.deb` files.
 
 ## Package Name
 
@@ -1782,7 +1780,7 @@ When using Claude, ChatGPT, Codex, or another coding assistant on this repositor
 17. Validate release candidates in the online emulator before packaging them as stable releases.
 18. Build release packages as ARM64 Debian `.deb` files.
 19. Use `https://dev.cardputer.cc/` as the CardputerZero release-upload and AppStore submission portal.
-20. While the GitHub repository is private, do not assume the Developer Center can import repository metadata; direct `.deb` upload is the initial distribution workflow.
+20. The GitHub repository is public as of `v0.1.0`; the Developer Center's submission flow clones it directly to pull `app-builder.json`'s store metadata.
 
 ---
 
