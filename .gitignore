@@ -1,4 +1,5 @@
 build/
+build-arm64/
 dist/
 *.deb
 *.log
