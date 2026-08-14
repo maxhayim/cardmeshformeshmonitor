@@ -369,16 +369,19 @@ AppStore screenshots should be captured at the CardputerZero native resolution:
 320 × 170
 ```
 
-The two below are the current Dashboard screen, host-rendered at 320×170 from
-the real `DashboardScreen` code (`tools/screenshot/`) — not a mockup, but
-also not a capture from real CardputerZero hardware or the online emulator.
-See [`docs/DEVICE_BUILD.md`](docs/DEVICE_BUILD.md) for what that does and
-doesn't confirm.
+The three below are the current Dashboard and Map screens, host-rendered at
+320×170 from the real `DashboardScreen`/`MapScreen` code (`tools/screenshot/`)
+— not mockups, but also not captures from real CardputerZero hardware or the
+online emulator. The map is a real OpenStreetMap tile fetch (mock is only
+the node positions). See [`docs/DEVICE_BUILD.md`](docs/DEVICE_BUILD.md) for
+what that does and doesn't confirm.
 
 <p align="center">
   <img src="screenshots/dashboard.png" alt="CardMesh Dashboard, connected" width="320">
   &nbsp;&nbsp;
   <img src="screenshots/dashboard-offline.png" alt="CardMesh Dashboard, server unreachable" width="320">
+  &nbsp;&nbsp;
+  <img src="screenshots/map.png" alt="CardMesh Map screen with node markers" width="320">
 </p>
 
 Recommended screenshots for the first release:
@@ -965,6 +968,28 @@ Offline message queueing is not part of the MVP.
 # Keyboard Controls
 
 CardMesh should be highly keyboard-driven.
+
+## Currently implemented (v0.1.0)
+
+Only Dashboard and Map exist so far, so this is a subset of the full plan
+below — note `M` currently means **Map**, not the planned Messages screen,
+since Messages doesn't exist yet. This will need reconciling once Messages
+is built.
+
+```text
+Dashboard:
+  R    Refresh
+  M    Open Map
+  Q    Quit
+
+Map:
+  Arrows  Pan
+  +/-     Zoom
+  B/Esc   Back to Dashboard
+  Q       Quit
+```
+
+## Full plan (not all implemented yet)
 
 Possible global shortcuts:
 

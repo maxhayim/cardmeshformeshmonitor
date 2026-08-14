@@ -92,4 +92,52 @@ HttpResponse HttpClient::perform(const std::string& method, const std::string& p
     return response;
 }
 
+HttpResponse fetchUrl(const std::string& url, const std::vector<std::string>& extraHeaders,
+                      long timeoutSeconds) {
+    ensureCurlGlobalInit();
+
+    HttpResponse response;
+
+    CURL* curl = curl_easy_init();
+    if (curl == nullptr) {
+        response.networkError = true;
+        response.errorMessage = "failed to initialize curl handle";
+        return response;
+    }
+
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, timeoutSeconds);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 1L);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 2L);
+    curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response.body);
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+
+    curl_slist* headers = nullptr;
+    for (const auto& header : extraHeaders) {
+        headers = curl_slist_append(headers, header.c_str());
+    }
+    if (headers != nullptr) {
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    }
+
+    const CURLcode result = curl_easy_perform(curl);
+    if (result != CURLE_OK) {
+        response.networkError = true;
+        response.errorMessage = curl_easy_strerror(result);
+    } else {
+        long statusCode = 0;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &statusCode);
+        response.statusCode = statusCode;
+    }
+
+    if (headers != nullptr) {
+        curl_slist_free_all(headers);
+    }
+    curl_easy_cleanup(curl);
+
+    return response;
+}
+
 }  // namespace cardmesh::api

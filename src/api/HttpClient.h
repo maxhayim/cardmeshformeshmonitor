@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace cardmesh::api {
 
@@ -33,5 +34,13 @@ private:
     long timeoutSeconds_ = 10;
     bool verifyTls_ = true;
 };
+
+// Fetches an arbitrary absolute URL, independent of any HttpClient instance's
+// configured base URL / bearer token. Used for talking to hosts other than
+// the configured MeshMonitor server (e.g. OSM tile servers -- see
+// src/map/TileCache.h) where a MeshMonitor bearer token would be wrong to
+// send and there's no single "base URL" to configure.
+HttpResponse fetchUrl(const std::string& url, const std::vector<std::string>& extraHeaders = {},
+                      long timeoutSeconds = 10);
 
 }  // namespace cardmesh::api

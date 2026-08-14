@@ -15,6 +15,11 @@ public:
     explicit DashboardScreen(DashboardModel& model);
     ~DashboardScreen();
 
+    // This screen's own LVGL screen object -- pass to lv_screen_load() to
+    // make it active. Not loaded automatically by the constructor, so it
+    // can be built before it's first shown.
+    lv_obj_t* screenObj() const { return screen_; }
+
     // Call periodically from the LVGL timer/main loop; cheap no-op if the
     // model hasn't changed since the last call.
     void refresh();
@@ -23,6 +28,8 @@ private:
     void build();
 
     DashboardModel& model_;
+
+    lv_obj_t* screen_ = nullptr;
 
     // Renders emoji inline on sourceLabel_ (see EmojiFont.h), falling back
     // to the normal font for everything else -- LVGL's bundled Montserrat

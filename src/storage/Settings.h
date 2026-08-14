@@ -11,6 +11,13 @@ struct AppSettings {
     bool https = true;
     std::string apiToken;
     std::string preferredSource;
+
+    // Defaults to OSM's own tile server, which has a usage policy
+    // (https://operations.osmfoundation.org/policies/tiles/) unsuited to
+    // heavy/widely-distributed use -- configurable here so a production
+    // deployment can point at a self-hosted or commercial tile server
+    // instead. {z}/{x}/{y} are substituted. See src/map/TileCache.h.
+    std::string tileServerTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 };
 
 // Persists connection configuration at ~/.config/cardmesh/config.json (mode 0600).

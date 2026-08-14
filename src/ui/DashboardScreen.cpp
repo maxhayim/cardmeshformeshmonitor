@@ -21,7 +21,8 @@ DashboardScreen::DashboardScreen(DashboardModel& model) : model_(model) { build(
 DashboardScreen::~DashboardScreen() { destroyEmojiFont(sourceLabelFont_); }
 
 void DashboardScreen::build() {
-    lv_obj_t* screen = lv_screen_active();
+    screen_ = lv_obj_create(nullptr);
+    lv_obj_t* screen = screen_;
     lv_obj_set_style_bg_color(screen, lv_color_black(), 0);
     lv_obj_set_style_pad_all(screen, 4, 0);
 
@@ -76,7 +77,7 @@ void DashboardScreen::build() {
     }
 
     statusLabel_ = lv_label_create(screen);
-    lv_label_set_text(statusLabel_, "[R] Refresh   [Q] Quit");
+    lv_label_set_text(statusLabel_, "[R]efresh [M]ap [Q]uit");
     lv_obj_set_style_text_color(statusLabel_, lv_color_white(), 0);
     lv_obj_align(statusLabel_, LV_ALIGN_BOTTOM_LEFT, 2, -2);
 }

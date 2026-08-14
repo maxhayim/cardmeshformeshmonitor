@@ -2,6 +2,8 @@
 
 #include <chrono>
 #include <ctime>
+#include <utility>
+#include <vector>
 
 #include "api/MeshMonitorClient.h"
 
@@ -18,8 +20,8 @@ using cardmesh::api::MeshMonitorClient;
 
 }  // namespace
 
-NetworkWorker::NetworkWorker(storage::AppSettings settings, DashboardModel& model)
-    : settings_(std::move(settings)), model_(model) {}
+NetworkWorker::NetworkWorker(storage::AppSettings settings, DashboardModel& model, MapModel& mapModel)
+    : settings_(std::move(settings)), model_(model), mapModel_(mapModel) {}
 
 NetworkWorker::~NetworkWorker() { stop(); }
 
@@ -69,9 +71,13 @@ void NetworkWorker::pollOnce() {
 
     const auto sources = client.getSources();
     if (!sources.ok || sources.value.empty()) {
-        std::lock_guard<std::mutex> lock(model_.mutex);
-        model_.connected = false;
-        model_.statusMessage = sources.ok ? "NO SOURCES" : "SERVER UNREACHABLE";
+        {
+            std::lock_guard<std::mutex> lock(model_.mutex);
+            model_.connected = false;
+            model_.statusMessage = sources.ok ? "NO SOURCES" : "SERVER UNREACHABLE";
+        }
+        std::lock_guard<std::mutex> lock(mapModel_.mutex);
+        mapModel_.connected = false;
         return;
     }
 
@@ -106,15 +112,37 @@ void NetworkWorker::pollOnce() {
         }
     }
 
-    std::lock_guard<std::mutex> lock(model_.mutex);
-    model_.connected = true;
-    model_.statusMessage = "CONNECTED";
-    model_.sourceName = selected->name;
-    model_.sourceCount = static_cast<int>(sources.value.size());
-    model_.nodeCount = nodes.ok ? static_cast<int>(nodes.value.size()) : model_.nodeCount;
-    model_.activeCount = activeCount;
-    model_.channelCount = channels.ok ? static_cast<int>(channels.value.size()) : model_.channelCount;
-    model_.unreadCount = unreadCount;
+    {
+        std::lock_guard<std::mutex> lock(model_.mutex);
+        model_.connected = true;
+        model_.statusMessage = "CONNECTED";
+        model_.sourceName = selected->name;
+        model_.sourceCount = static_cast<int>(sources.value.size());
+        model_.nodeCount = nodes.ok ? static_cast<int>(nodes.value.size()) : model_.nodeCount;
+        model_.activeCount = activeCount;
+        model_.channelCount = channels.ok ? static_cast<int>(channels.value.size()) : model_.channelCount;
+        model_.unreadCount = unreadCount;
+    }
+
+    if (nodes.ok) {
+        std::vector<MapNodeEntry> positioned;
+        for (const auto& node : nodes.value) {
+            if (!node.latitude.has_value() || !node.longitude.has_value()) {
+                continue;
+            }
+            MapNodeEntry entry;
+            entry.id = node.id;
+            entry.name = node.longName.empty() ? node.shortName : node.longName;
+            entry.latitude = *node.latitude;
+            entry.longitude = *node.longitude;
+            entry.favorite = node.favorite;
+            positioned.push_back(std::move(entry));
+        }
+
+        std::lock_guard<std::mutex> lock(mapModel_.mutex);
+        mapModel_.connected = true;
+        mapModel_.nodes = std::move(positioned);
+    }
 }
 
 }  // namespace cardmesh::ui

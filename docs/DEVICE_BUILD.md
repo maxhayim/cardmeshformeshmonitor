@@ -21,19 +21,22 @@ release candidate to test, not a verified release.
 
 ## What's actually implemented
 
-Only the MVP **Dashboard** screen (see the README's "Dashboard" mock) is
-implemented:
+The MVP **Dashboard** screen (see the README's "Dashboard" mock) and a
+**Map** screen showing node positions on an offline-capable OpenStreetMap
+view are implemented:
 
 - Reads `~/.config/cardmesh/config.json` (same format/location as the host
   CLI build — see `src/storage/Settings.cpp`). There is no first-run setup
   UI yet, so this file must exist before launch.
 - A background thread (`src/ui/NetworkWorker.cpp`) polls MeshMonitor every
-  10 seconds and updates a shared, mutex-guarded model — the LVGL UI thread
-  never blocks on network I/O, per the README's "Background Architecture."
-- Global keyboard shortcuts only: `R` (refresh now) and `Q`/`Esc` (quit),
-  read directly from `/dev/input` (`src/ui/EvdevKeyboard.cpp`) rather than
-  through LVGL's focus/group indev system, since there are no focusable
-  widgets yet.
+  10 seconds and updates shared, mutex-guarded models (`DashboardModel`,
+  `MapModel`) — the LVGL UI thread never blocks on network I/O, per the
+  README's "Background Architecture."
+- Global keyboard shortcuts: `R` (refresh now), `M` (open Map from
+  Dashboard), `B`/`Esc` (back to Dashboard from Map), arrow keys (pan on
+  Map), `+`/`-` (zoom on Map), `Q` (quit) — read directly from
+  `/dev/input` (`src/ui/EvdevKeyboard.cpp`) rather than through LVGL's
+  focus/group indev system, since neither screen has focusable widgets.
 - Channels, Chat, Nodes, Node Details, Direct Messages, Sources, Telemetry,
   Traceroute, Field Mode, and Settings screens are **not implemented**.
 - `src/storage/Database.cpp` (SQLite cache, unread state, favorites) exists
@@ -53,6 +56,58 @@ implemented:
   lookahead, not full text shaping like a browser has. Those still render
   as whatever the fallback font does with each individual codepoint
   (typically nothing, since Montserrat doesn't have them either).
+
+## Map screen: offline OpenStreetMap tiles
+
+`M` from the Dashboard opens a node-position map. This is a real runtime
+tile cache, not a fixed pre-baked region: `src/map/TileCache.cpp` fetches
+OSM raster tiles over HTTP (`AppSettings::tileServerTemplate`, default
+`tile.openstreetmap.org`) and writes them to
+`~/.local/state/cardmesh/tiles/{z}/{x}/{y}.png`; once a tile has been
+fetched once it displays with no connection, for whatever areas have
+actually been viewed. `src/map/TileFetcher.cpp` runs this on a background
+thread (mirroring `NetworkWorker`'s pattern) so a cache miss never blocks
+the UI. `src/ui/MapScreen.cpp` renders a 2×2 grid of tiles covering the
+320×170 viewport at any pan offset, plus small marker dots (yellow for
+favorites) at each node's projected position, computed via standard OSM
+"slippy map" Web Mercator math (`src/map/WebMercator.h`).
+
+The initial view centers on and auto-zooms to fit the bounding box of
+whatever nodes currently have a known GPS position (falls back to nothing
+drawn if none do) — not a hardcoded zoom level, since real mesh node
+spreads vary enormously. After that, `M`/arrows/`+`/`-` are yours; nothing
+re-centers automatically once you've panned or zoomed manually.
+
+**OSM tile server usage policy**: `tile.openstreetmap.org`'s policy
+(https://operations.osmfoundation.org/policies/tiles/) prohibits heavy or
+bulk automated use and requires a descriptive `User-Agent` (CardMesh sends
+one identifying itself and this repo). Fine for light personal use with
+this disk cache in front of it, but a widely-distributed build should
+point `tileServerTemplate` in `~/.config/cardmesh/config.json` at a
+self-hosted or commercial tile server instead.
+
+**A real bug this surfaced, worth knowing about**: the first working build
+of this screen showed node markers correctly but a completely black map —
+no tiles, no error visible. `LV_USE_LOG` and `LV_LOG_PRINTF` turned out to
+both be `0` in both `lv_conf.h` variants (only `LV_LOG_LEVEL` had been set,
+which does nothing while the gate itself is off), so LVGL's own warnings
+about *why* were silently discarded. With logging actually enabled, the
+real error was `lv_realloc: couldn't reallocate memory` — `LV_MEM_SIZE`
+was 128KB, but a single decoded 256×256 OSM tile needs ~256KB
+(256×256×4 bytes ARGB8888) to decode into, so the allocator couldn't even
+fit one tile. The 16×16 emoji images (§ above) never hit this because
+they're 1024 bytes each. Fixed by raising `LV_MEM_SIZE` to 4MB in both
+`src/ui/lv_conf.h` and `tools/screenshot/lv_conf.h`, and logging is now
+left on (`LV_LOG_LEVEL_WARN`) rather than re-silenced, since it's what
+actually surfaced this. If a future feature adds more/larger decoded
+images and hits this again, the same “enable logging first, don’t guess”
+approach is the fastest way back to the real error.
+
+Verified via `tools/screenshot/`: `./tools/screenshot/build/screenshot map
+out.raw` does a real HTTP fetch against the real tile server (mock is only
+the node position list — this dev machine isn't near real mesh nodes) and
+renders the actual `MapScreen` code; `screenshots/map.png` in the README
+is that real output, not a mockup.
 
 ## Toolchain: why zig instead of a native cross-compiler
 
@@ -199,6 +254,15 @@ validator, not a functional test on real hardware or the emulator.
   depending on the system's own). If CardputerZero's OS ships an older
   glibc, the process will fail to start with a `GLIBC_2.36 not found`-style
   error. The store portal's packaging check does not validate this.
+- **Map screen performance**: repeated tile decode/redraw while panning
+  (each tile is decoded fresh, not pre-cached as a bitmap — LVGL's own
+  image cache may or may not help here) has not been measured on anything
+  resembling CardputerZero's actual CPU. The host screenshot tool renders
+  fast, but that's an Apple Silicon Mac, not representative.
+- **Map screen network behavior on the real device is unconfirmed**: tile
+  fetches use the same `HttpClient`/libcurl path as MeshMonitor API calls
+  and were verified from this dev machine's network, not from whatever
+  connectivity a real CardputerZero has in the field.
 
 ## If it doesn't run
 

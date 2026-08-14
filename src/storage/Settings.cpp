@@ -34,6 +34,8 @@ std::optional<AppSettings> Settings::load(const std::string& path) {
         settings.https = json.value("https", true);
         settings.apiToken = json.value("token", "");
         settings.preferredSource = json.value("preferredSource", "");
+        settings.tileServerTemplate =
+            json.value("tileServerTemplate", AppSettings().tileServerTemplate);
         return settings;
     } catch (const nlohmann::json::exception&) {
         return std::nullopt;
@@ -55,6 +57,7 @@ bool Settings::save(const AppSettings& settings, const std::string& path) {
     json["https"] = settings.https;
     json["token"] = settings.apiToken;
     json["preferredSource"] = settings.preferredSource;
+    json["tileServerTemplate"] = settings.tileServerTemplate;
 
     std::ofstream file(path, std::ios::trunc);
     if (!file.is_open()) {

@@ -43,7 +43,11 @@ def main():
     cpp_sources = [
         os.path.join(TOOL_DIR, "main.cpp"),
         os.path.join(REPO_ROOT, "src", "ui", "DashboardScreen.cpp"),
+        os.path.join(REPO_ROOT, "src", "ui", "MapScreen.cpp"),
         os.path.join(REPO_ROOT, "src", "ui", "EmojiFont.cpp"),
+        os.path.join(REPO_ROOT, "src", "api", "HttpClient.cpp"),
+        os.path.join(REPO_ROOT, "src", "map", "TileCache.cpp"),
+        os.path.join(REPO_ROOT, "src", "map", "TileFetcher.cpp"),
     ]
     lvgl_sources = sorted(
         glob.glob(os.path.join(REPO_ROOT, "third_party", "lvgl", "src", "**", "*.c"), recursive=True)
@@ -53,7 +57,7 @@ def main():
     objects += [compile_unit(s, is_cpp=False) for s in lvgl_sources]
 
     binary = os.path.join(OUT_DIR, "screenshot")
-    subprocess.run(["c++", "-O1", "-o", binary, *objects], check=True)
+    subprocess.run(["c++", "-O1", "-o", binary, *objects, "-lcurl"], check=True)
     print(f"\nBuilt: {binary}")
 
 

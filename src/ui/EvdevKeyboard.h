@@ -4,7 +4,19 @@
 
 namespace cardmesh::ui {
 
-enum class GlobalKey { None, Refresh, Quit };
+enum class GlobalKey {
+    None,
+    Refresh,
+    Quit,
+    ToggleMap,  // 'M' from the Dashboard: open the Map screen
+    Back,       // Esc/'B' from the Map screen: return to the Dashboard
+    PanUp,
+    PanDown,
+    PanLeft,
+    PanRight,
+    ZoomIn,
+    ZoomOut,
+};
 
 // Minimal, non-blocking reader for global keyboard shortcuts on a Linux
 // evdev device (e.g. /dev/input/event0). Deliberately bypasses LVGL's
