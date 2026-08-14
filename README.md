@@ -665,7 +665,7 @@ Example:
 ┌──────────────────────────────┐
 │ CARDMESH                 ●   │
 ├──────────────────────────────┤
-│ SOURCE: Doral                │
+│ SOURCE: Miami                │
 │                              │
 │ Nodes                  127   │
 │ Active                  83   │
@@ -699,7 +699,7 @@ Example:
 ```text
 SOURCES
 
-> Doral Base          ●
+> Miami Base          ●
   EOC                 ●
   Brickell            ●
   Lake Placid         ○
@@ -747,10 +747,10 @@ FloridaMesh
 K4ABC 22:41
 Testing Kendall node.
 
-MTEDC 22:43
-Copy from Doral.
+MRNODE 22:43
+Copy from Tampa.
 
-WRUV246 22:44
+WXOP567 22:44
 Testing CardMesh.
 
 ──────────────────────────────
