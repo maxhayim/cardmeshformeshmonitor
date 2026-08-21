@@ -1,3 +1,6 @@
+> [!WARNING]
+> **CardMesh for MeshMonitor is under active development** and not yet stable, features and config may still change. Give the repo a **Star** and **Watch** it to get notified when a new release lands.
+
 <p align="center">
   <img src="assets/branding/logo.png" alt="CardMesh for MeshMonitor" width="620">
 </p>
